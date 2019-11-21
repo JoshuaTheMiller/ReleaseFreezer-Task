@@ -1,0 +1,61 @@
+{
+  "id": "be52935c-646a-4b85-a209-29fc6a893b71",
+  "name": "Date Based Gate",
+  "friendlyName": "Date Gate",
+  "description": "Check if it releasing is okay given the current time and date.",
+  "author": "Joshua Miller",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Server",
+    "ServerGate"
+  ],
+  "preview": true,
+  "groups": [
+    {
+      "name": "extension",
+      "displayName": "Extension",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Wait for the current date and time to be within the release window.",
+  "inputs": [
+    {
+      "name": "connectedService",
+      "type": "connectedService:ReleaseFreezer",
+      "label": "Release Freezer Endpoint",
+      "required": true,
+      "helpMarkDown": "Release Freezer Endpoint connection."
+    },
+    {
+      "name":"path",
+      "type":"string",
+      "label":"Specific Path",
+      "defaultValue": "api/checkdate",
+      "required":"false",
+      "helpMarkDown":"Leaving this empty is valid."
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "$(connectedService)",
+        "EndpointUrl": "$(endpoint.url)/$(path)",
+        "Method": "GET",
+        "Body": "",
+        "Headers": "{\"Content-Type\":\"application/json\"}",
+        "WaitForCompletion": "false",
+        "Expression": "eq(root['okayToRelease'], true)"
+      }
+    }
+  }
+}
